@@ -44,6 +44,13 @@
             break;
         case 1:
             [self functionPOST];
+            break;
+        case 2:
+            [self functionPUT];
+            break;
+        case 3:
+            [self functionDELETE];
+            break;
         default:
             break;
     }
@@ -64,6 +71,8 @@
     if (selection == 1) {
         self.postDataField.hidden = NO;
     } else if (selection == 2) {
+        self.postDataField.hidden = NO;
+    } else if (selection == 3) {
         self.postDataField.hidden = NO;
     } else {
         self.postDataField.hidden = YES;
@@ -89,6 +98,18 @@
      }];
 }
 
+- (NSData *) getData {
+    NSString *dataString = self.postDataField.text;
+    NSData *data = [dataString dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
+    return data;
+}
+
+- (NSURL *) getURL {
+    NSString *stringURL = self.requsetURL.text;
+    NSURL *URL = [NSURL URLWithString:stringURL];
+    return URL;
+}
+
 - (void) functionPOST {
     NSString *URLString = self.requsetURL.text;
     NSString *postRequest = [self.postDataField text];
@@ -110,11 +131,39 @@
 }
 
 - (void) functionPUT {
-    
+    NSURL *URL = [self getURL];
+    NSData *data = [self getData];
+    NSString *dataLength = [NSString stringWithFormat:@"%lu", (unsigned long) [data length]];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    [request setURL:URL];
+    [request setHTTPMethod:@"PUT"];
+    [request setValue:dataLength forHTTPHeaderField:@"Content-Length"];
+    [request setValue:@"application/x-www-from-urlencoded" forHTTPHeaderField:@"Content-Type"];
+    [request setHTTPBody:data];
+    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    if (connection) {
+        NSLog(@"Connection Successful - PUT");
+    } else {
+        NSLog(@"Connection Failed - PUT");
+    }
 }
 
 - (void) functionDELETE {
-    
+    NSURL *URL = [self getURL];
+    NSData *data = [self getData];
+    NSString *dataLength = [NSString stringWithFormat:@"%lu", (unsigned long)[data length]];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    [request setURL:URL];
+    [request setHTTPMethod:@"DELETE"];
+    [request setValue:dataLength forHTTPHeaderField:@"Content-Length"];
+    [request setValue:@"application/x-www-from-urlencoded" forHTTPHeaderField:@"Content-Type"];
+    [request setHTTPBody:data];
+    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    if (connection) {
+        NSLog(@"Connection Successful - DELETE");
+    } else {
+        NSLog(@"Connection Failed - DELETE");
+    }
 }
 
 @end
