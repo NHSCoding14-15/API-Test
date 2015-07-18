@@ -138,7 +138,7 @@
     [request setURL:URL];
     [request setHTTPMethod:@"PUT"];
     [request setValue:dataLength forHTTPHeaderField:@"Content-Length"];
-    [request setValue:@"application/x-www-from-urlencoded" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
     [request setHTTPBody:data];
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     if (connection) {
